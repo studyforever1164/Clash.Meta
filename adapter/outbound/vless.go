@@ -389,11 +389,12 @@ func (v *Vless) dialXHTTPConn() (net.Conn, error) {
 	case "stream-up":
 		return xhttp.DialStreamUp(cfg, transport, downloadTransport)
 	case "packet-up":
-		return xhttp.DialPacketUp(cfg, transport)
+		return xhttp.DialPacketUp(cfg, transport, downloadTransport)
 	default:
 		return nil, fmt.Errorf("xhttp mode %s is not implemented yet", mode)
 	}
 }
+
 func (v *Vless) dialContext(ctx context.Context) (c net.Conn, err error) {
 	switch v.option.Network {
 	case "xhttp":
