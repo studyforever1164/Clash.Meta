@@ -9,15 +9,29 @@ import (
 	"strings"
 
 	"github.com/metacubex/http"
+	tlsC "github.com/metacubex/mihomo/component/tls"
 )
 
 type Config struct {
-	Host          string
-	Path          string
-	Mode          string
-	Headers       map[string]string
-	NoGRPCHeader  bool
-	XPaddingBytes string
+	Host             string
+	Path             string
+	Mode             string
+	Headers          map[string]string
+	NoGRPCHeader     bool
+	XPaddingBytes    string
+	DownloadSettings *DownloadConfig
+}
+
+type DownloadConfig struct {
+	Server            string
+	Port              int
+	Reality           *tlsC.RealityConfig
+	Host              string
+	Path              string
+	Mode              string
+	ServerName        string
+	ClientFingerprint string
+	SkipCertVerify    bool
 }
 
 func (c *Config) NormalizedMode() string {
@@ -33,6 +47,9 @@ func (c *Config) EffectiveMode(hasReality bool) string {
 		return mode
 	}
 	if hasReality {
+		if c.DownloadSettings != nil {
+			return "stream-up"
+		}
 		return "stream-one"
 	}
 	return "packet-up"
@@ -126,7 +143,7 @@ func parseRange(s string) (int, int, error) {
 	return minVal, maxVal, nil
 }
 
-func (c *Config) FillStreamRequest(req *http.Request) error {
+func (c *Config) FillStreamRequest(req *http.Request, sessionID string) error {
 	req.Header = c.RequestHeader()
 
 	paddingValue, err := c.RandomPadding()
@@ -142,6 +159,8 @@ func (c *Config) FillStreamRequest(req *http.Request) error {
 		}
 		req.Header.Set("Referer", rawURL+sep+"x_padding="+paddingValue)
 	}
+
+	c.ApplyMetaToRequest(req, sessionID, "")
 
 	if req.Body != nil && !c.NoGRPCHeader {
 		req.Header.Set("Content-Type", "application/grpc")
