@@ -275,6 +275,11 @@ func (p *Proxy) URLTest(ctx context.Context, url string, expectedStatus utils.In
 
 	satisfied = resp != nil && (expectedStatus == nil || expectedStatus.Check(uint16(resp.StatusCode)))
 	t = uint16(time.Since(start) / time.Millisecond)
+
+	if UrlTestHook != nil {
+		UrlTestHook(url, p.Name(), t)
+	}
+
 	return
 }
 

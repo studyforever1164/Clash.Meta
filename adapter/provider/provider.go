@@ -139,6 +139,10 @@ func (pp *proxySetProvider) MarshalJSON() ([]byte, error) {
 	})
 }
 
+func (pp *proxySetProvider) GetSubscriptionInfo() *SubscriptionInfo {
+	return pp.subscriptionInfo
+}
+
 func (pp *proxySetProvider) Name() string {
 	return pp.Fetcher.Name()
 }

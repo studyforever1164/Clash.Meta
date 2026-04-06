@@ -334,6 +334,9 @@ func loadProvider[T P.Provider](providers map[string]T) {
 				}
 			}
 		}
+		if DefaultProviderLoadedHook != nil {
+			DefaultProviderLoadedHook(name)
+		}
 	}
 
 	wg := sync.WaitGroup{}
