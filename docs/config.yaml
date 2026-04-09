@@ -832,6 +832,7 @@ proxies: # socks5
       #   c-max-reuse-times: "0"
       #   h-max-request-times: "600-900"
       #   h-max-reusable-secs: "1800-3000"
+      #   h-keep-alive-period: 0
       # download-settings:
       #   ## xhttp part
       #   path: "/"
@@ -847,6 +848,7 @@ proxies: # socks5
       #     c-max-reuse-times: "0"
       #     h-max-request-times: "600-900"
       #     h-max-reusable-secs: "1800-3000"
+      #     h-keep-alive-period: 0
       #   ## proxy part
       #   server: server
       #   port: 443
